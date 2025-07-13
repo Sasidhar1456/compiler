@@ -11,7 +11,7 @@ RUN apt-get update && \
 WORKDIR /app
 
 # 🟢 Copy the already-built JAR from your local target folder
-COPY target/compiler-0.0.1-SNAPSHOT.jar app.jar
+COPY target/Compiler-0.0.1-SNAPSHOT.jar app.jar
 
 EXPOSE 3000
 ENTRYPOINT ["java", "-jar", "app.jar"]
