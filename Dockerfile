@@ -1,4 +1,15 @@
-# Use official OpenJDK image with Python support
+# ====================
+# 1st Stage: Build with Maven
+# ====================
+FROM maven:3.9.6-eclipse-temurin-17 AS build
+WORKDIR /app
+COPY pom.xml .
+COPY src ./src
+RUN mvn clean package -DskipTests
+
+# ====================
+# 2nd Stage: Run Spring Boot app with Python
+# ====================
 FROM openjdk:17-slim
 
 # Install Python
@@ -9,11 +20,11 @@ RUN apt-get update && \
 # Set working directory
 WORKDIR /app
 
-# Copy Maven build output (after building locally or use Maven image in multi-stage)
-COPY target/compiler-0.0.1-SNAPSHOT.jar app.jar
+# Copy built jar from stage 1
+COPY --from=build /app/target/compiler-0.0.1-SNAPSHOT.jar app.jar
 
 # Expose port
-EXPOSE 9090
+EXPOSE 3000
 
 # Run Spring Boot app
 ENTRYPOINT ["java", "-jar", "app.jar"]
